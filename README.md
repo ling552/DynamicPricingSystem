@@ -95,6 +95,8 @@ docker run --rm -p 8000:8000 ^
   dynamicpricingsystem:latest
 ```
 
+容器启动时会自动执行数据库迁移和静态资源收集；`DPS_DEBUG=0` 下也会正常显示页面图片、CSS 等静态资源。
+
 Linux/macOS 可将续行符 `^` 替换为 `\`。
 
 如需启动时写入演示数据：

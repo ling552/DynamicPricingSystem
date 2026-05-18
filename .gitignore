@@ -16,6 +16,7 @@ __pycache__/
 # Django/runtime data
 *.sqlite3
 price_strategy_system/data/
+price_strategy_system/staticfiles/
 price_strategy_system/db.sqlite3
 
 # Logs

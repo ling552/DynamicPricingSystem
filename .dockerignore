@@ -17,4 +17,5 @@ springbootAfter
 price_strategy_system/build
 price_strategy_system/dist
 price_strategy_system/data
+price_strategy_system/staticfiles
 price_strategy_system/db.sqlite3
