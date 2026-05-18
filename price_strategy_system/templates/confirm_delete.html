@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}删除确认 · 动态价格策略模拟与分析系统{% endblock %}
+{% block body_class %}app-bg page-bg-confirm{% endblock %}
+{% block content %}
+<div class="row justify-content-center">
+  <div class="col-12 col-md-10 col-lg-8 col-xl-6">
+    <div class="card shadow-sm app-card">
+      <div class="card-body p-4 p-md-5">
+        <div class="app-media app-banner-sm mb-4">
+          <img src="{% static 'images/finance-notes.jpg' %}" alt="删除确认">
+        </div>
+        <h1 class="h5 fw-semibold mb-2">确认删除{{ type }}</h1>
+        <p class="text-muted mb-4">删除后将无法恢复，请谨慎操作。</p>
+
+        <div class="p-3 rounded-3 app-info mb-4">
+          <div class="fw-semibold">对象信息</div>
+          <div class="small text-muted mt-1">{{ object }}</div>
+        </div>
+
+        <form method="post" class="d-flex gap-2">
+          {% csrf_token %}
+          <button class="btn btn-danger">确认删除</button>
+          <a class="btn btn-outline-secondary" href="javascript:history.back()">取消</a>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

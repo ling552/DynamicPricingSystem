@@ -1,0 +1,72 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}销售记录 · 动态价格策略模拟与分析系统{% endblock %}
+{% block body_class %}app-bg page-bg-sales-form{% endblock %}
+{% block content %}
+<div class="row g-4">
+  <div class="col-12">
+    <div class="d-flex justify-content-between align-items-center">
+      <div>
+        <h1 class="h4 fw-semibold mb-1">{% if mode == 'create' %}添加销售记录{% else %}编辑销售记录{% endif %}</h1>
+        <div class="text-muted">建议按日期连续录入，便于仪表盘展示趋势曲线。</div>
+      </div>
+      <a class="btn btn-outline-primary" href="{% url 'sales_list' %}">返回列表</a>
+    </div>
+  </div>
+
+  <div class="col-12 col-xl-7">
+    <div class="card shadow-sm app-card">
+      <div class="card-body p-4 p-md-5">
+        <form method="post" class="row g-3">
+          {% csrf_token %}
+          <div class="col-12">
+            <label class="form-label">商品</label>
+            {{ form.product }}
+          </div>
+          <div class="col-12 col-md-6">
+            <label class="form-label">销售日期</label>
+            {{ form.sale_date }}
+          </div>
+          <div class="col-12 col-md-6">
+            <label class="form-label">成交价格</label>
+            {{ form.price }}
+          </div>
+          <div class="col-12">
+            <label class="form-label">销售数量</label>
+            {{ form.quantity }}
+          </div>
+          <div class="col-12 d-flex gap-2 mt-3">
+            <button class="btn btn-primary">保存</button>
+            <a class="btn btn-outline-secondary" href="{% url 'sales_list' %}">取消</a>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-12 col-xl-5">
+    <div class="card shadow-sm app-card h-100">
+      <div class="card-body p-4">
+        <div class="app-media app-banner-sm mb-4">
+          <img src="{% static 'images/calculator-desk.jpg' %}" alt="销售数据录入">
+        </div>
+        <h2 class="h5 fw-semibold mb-3">录入建议</h2>
+        <div class="vstack gap-3">
+          <div class="p-3 rounded-3 app-info">
+            <div class="fw-semibold">成交价与当前价</div>
+            <div class="small text-muted mt-1">成交价可与商品“当前价格”不同，系统会用于统计与分析。</div>
+          </div>
+          <div class="p-3 rounded-3 app-info">
+            <div class="fw-semibold">连续日期</div>
+            <div class="small text-muted mt-1">尽量保持日期有序，仪表盘会自动计算近 14 天趋势。</div>
+          </div>
+          <div class="p-3 rounded-3 app-info">
+            <div class="fw-semibold">模拟前准备</div>
+            <div class="small text-muted mt-1">建议至少录入 5 条销售记录后再进行策略模拟，结果更稳定。</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

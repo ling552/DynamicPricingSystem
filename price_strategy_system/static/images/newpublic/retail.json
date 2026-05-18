@@ -1,0 +1,87 @@
+{
+  "query": "supermarket aisle",
+  "timestamp": "2026-03-23T12:00:37.114695",
+  "total_results": 8,
+  "results": [
+    {
+      "title": "Free Images : building, shop, japan, aisle, pop, yogurt, supermarket ...",
+      "image": "https://c.pxhere.com/photos/cd/4b/aisle_business_cart_commerce_food_grocery_indoors_mall-1562063.jpg!s1",
+      "thumbnail": "https://tse4.mm.bing.net/th/id/OIP.yuL1PPG4h_hDtJwA936GkQHaJ4?pid=Api",
+      "url": "https://pxhere.com/en/photo/600779",
+      "source": "Bing",
+      "width": 600,
+      "height": 800,
+      "local_path": "D:\\HTML\\DynamicPricingSystem\\price_strategy_system\\static\\images\\newpublic\\retail\\image_001.jpg"
+    },
+    {
+      "title": "Free Images : building, shop, japan, aisle, pop, yogurt, supermarket ...",
+      "image": "https://c.pxhere.com/photos/4f/20/retail_grocery_supermarket_store_food_shopping_market_shop-613228.jpg!s1",
+      "thumbnail": "https://tse4.mm.bing.net/th/id/OIP.yb91ZwrZMG5jPGRlw5xhJgHaE8?pid=Api",
+      "url": "https://pxhere.com/en/photo/600779",
+      "source": "Bing",
+      "width": 600,
+      "height": 400,
+      "local_path": "D:\\HTML\\DynamicPricingSystem\\price_strategy_system\\static\\images\\newpublic\\retail\\image_002.jpg"
+    },
+    {
+      "title": "Free Images : building, shop, japan, aisle, pop, yogurt, supermarket ...",
+      "image": "https://c.pxhere.com/photos/39/6e/supermarket_market_grocery_store_food_shop_retail_shelf-885021.jpg!s1",
+      "thumbnail": "https://tse4.mm.bing.net/th/id/OIP.S7U5cSLDw3GLlUrGyCrk8AHaE8?pid=Api",
+      "url": "https://pxhere.com/en/photo/600779",
+      "source": "Bing",
+      "width": 600,
+      "height": 401,
+      "local_path": "D:\\HTML\\DynamicPricingSystem\\price_strategy_system\\static\\images\\newpublic\\retail\\image_003.jpg"
+    },
+    {
+      "title": "Free Images : building, shop, japan, aisle, pop, yogurt, supermarket ...",
+      "image": "https://c.pxhere.com/photos/0b/10/supermarket_fridge_produce_food_market_retail_shop_store-858798.jpg!s1",
+      "thumbnail": "https://tse3.mm.bing.net/th/id/OIP.xq9_KVHpPNi_E0lNzTJUzgHaEQ?pid=Api",
+      "url": "https://pxhere.com/en/photo/600779",
+      "source": "Bing",
+      "width": 600,
+      "height": 345,
+      "local_path": "D:\\HTML\\DynamicPricingSystem\\price_strategy_system\\static\\images\\newpublic\\retail\\image_004.jpg"
+    },
+    {
+      "title": "Free Images : building, aisle, living, library, supermarket, department ...",
+      "image": "https://c.pxhere.com/photos/78/66/supermarket_yogurt_department_refrigeration_display_shelf_shop_seiyu_ltd_livin-600780.jpg!d",
+      "thumbnail": "https://tse3.mm.bing.net/th/id/OIP.znxHu0BEIp2HLLul1ZGIwgHaJ4?pid=Api",
+      "url": "https://pxhere.com/en/photo/425380",
+      "source": "Bing",
+      "width": 1200,
+      "height": 1600,
+      "local_path": "D:\\HTML\\DynamicPricingSystem\\price_strategy_system\\static\\images\\newpublic\\retail\\image_005.jpg"
+    },
+    {
+      "title": "Free Images : building, shop, japan, aisle, pop, yogurt, supermarket ...",
+      "image": "https://c.pxhere.com/photos/74/32/iso1600_20megapixels_sonycybershotrx100iii-310300.jpg!s1",
+      "thumbnail": "https://tse3.mm.bing.net/th/id/OIP.KJ2X2L3dugS5bNp1MrNdSAHaE8?pid=Api",
+      "url": "https://pxhere.com/en/photo/600779",
+      "source": "Bing",
+      "width": 600,
+      "height": 400,
+      "local_path": "D:\\HTML\\DynamicPricingSystem\\price_strategy_system\\static\\images\\newpublic\\retail\\image_006.jpg"
+    },
+    {
+      "title": "Free Images : building, shop, japan, aisle, yogurt, supermarket ...",
+      "image": "https://c.pxhere.com/photos/d7/9f/cup_noodles_cup_noodle_pile_up_fruit_seiyu_ltd_living_supermarket_grocery-493013.jpg!d",
+      "thumbnail": "https://tse1.mm.bing.net/th/id/OIP.8ET0XgwUQ_ehGjUZrx2KnwHaFj?pid=Api",
+      "url": "https://pxhere.com/en/photo/600780",
+      "source": "Bing",
+      "width": 1200,
+      "height": 899,
+      "local_path": "D:\\HTML\\DynamicPricingSystem\\price_strategy_system\\static\\images\\newpublic\\retail\\image_007.jpg"
+    },
+    {
+      "title": "Free Images : building, shop, japan, aisle, pop, yogurt, supermarket ...",
+      "image": "https://c.pxhere.com/photos/bd/54/business_music_tea_shop_bader_tea_business_east_frisia_leisure-968681.jpg!s1",
+      "thumbnail": "https://tse3.mm.bing.net/th/id/OIP.urNrHA9ccbIzMAosMi5SZwHaGo?pid=Api",
+      "url": "https://pxhere.com/en/photo/600779",
+      "source": "Bing",
+      "width": 600,
+      "height": 537,
+      "local_path": "D:\\HTML\\DynamicPricingSystem\\price_strategy_system\\static\\images\\newpublic\\retail\\image_008.jpg"
+    }
+  ]
+}

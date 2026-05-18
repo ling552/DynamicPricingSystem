@@ -1,0 +1,61 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}注册 · 动态价格策略模拟与分析系统{% endblock %}
+{% block body_class %}app-bg page-bg-register{% endblock %}
+{% block content %}
+<div class="row justify-content-center app-auth-shell">
+  <div class="col-12 col-lg-9 col-xl-8">
+    <div class="card shadow-sm app-card overflow-hidden">
+      <div class="row g-0 align-items-stretch">
+        <div class="col-12 col-md-5">
+          <div class="h-100 app-media">
+            <img src="{% static 'images/register-pastel-flatlay.jpg' %}" alt="玛卡色工作台">
+          </div>
+        </div>
+        <div class="col-12 col-md-7">
+          <div class="card-body p-4 p-md-5 h-100 d-flex flex-column justify-content-center">
+            <h2 class="h4 fw-semibold mb-3">创建账号</h2>
+            <p class="text-muted mb-4">注册后即可开始搭建你的商品数据，并基于历史销量模拟定价策略。</p>
+
+            {% if form.non_field_errors %}
+              <div class="alert alert-danger shadow-sm">{{ form.non_field_errors }}</div>
+            {% endif %}
+
+            <form method="post" class="vstack gap-3">
+              {% csrf_token %}
+              {% if next %}<input type="hidden" name="next" value="{{ next }}">{% endif %}
+              <div>
+                <label class="form-label">用户名</label>
+                {{ form.username }}
+                {% if form.username.errors %}
+                  <div class="text-danger small mt-1">{{ form.username.errors }}</div>
+                {% endif %}
+              </div>
+              <div>
+                <label class="form-label">密码</label>
+                {{ form.password1 }}
+                {% if form.password1.errors %}
+                  <div class="text-danger small mt-1">{{ form.password1.errors }}</div>
+                {% endif %}
+              </div>
+              <div>
+                <label class="form-label">确认密码</label>
+                {{ form.password2 }}
+                {% if form.password2.errors %}
+                  <div class="text-danger small mt-1">{{ form.password2.errors }}</div>
+                {% endif %}
+              </div>
+              <button class="btn btn-primary w-100">注册并进入系统</button>
+            </form>
+
+            <div class="d-flex justify-content-between align-items-center mt-4">
+              <span class="text-muted small">已有账号？</span>
+              <a href="{% url 'login' %}" class="btn btn-sm btn-outline-primary">去登录</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

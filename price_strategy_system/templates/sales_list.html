@@ -1,0 +1,62 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}销售数据 · 动态价格策略模拟与分析系统{% endblock %}
+{% block body_class %}app-bg page-bg-sales{% endblock %}
+{% block content %}
+<div class="row g-4">
+  <div class="col-12">
+    <div class="d-flex flex-wrap justify-content-between align-items-center gap-2">
+      <div>
+        <h1 class="h4 fw-semibold mb-1">销售数据管理</h1>
+        <div class="text-muted">录入每次成交价格与销量，用于后续策略模拟与图表分析。</div>
+      </div>
+      <div class="d-flex gap-2">
+        <a class="btn btn-primary" href="{% url 'sales_create' %}">添加销售记录</a>
+        <a class="btn btn-outline-primary" href="/admin/pricing_app/salesrecord/" target="_blank">后台查看</a>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-12">
+    <div class="app-media app-banner">
+      <img src="{% static 'images/warehouse-racks.jpg' %}" alt="仓储货架">
+    </div>
+  </div>
+
+  <div class="col-12">
+    <div class="card shadow-sm app-card">
+      <div class="card-body p-0">
+        <div class="table-responsive">
+          <table class="table align-middle mb-0">
+            <thead class="table-light">
+              <tr>
+                <th class="ps-4">商品</th>
+                <th>日期</th>
+                <th class="text-end">成交价</th>
+                <th class="text-end">数量</th>
+                <th class="text-end pe-4">操作</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for r in records %}
+                <tr>
+                  <td class="ps-4 fw-semibold">{{ r.product.name }}</td>
+                  <td class="text-muted">{{ r.sale_date }}</td>
+                  <td class="text-end">¥ {{ r.price }}</td>
+                  <td class="text-end">{{ r.quantity }}</td>
+                  <td class="text-end pe-4">
+                    <a class="btn btn-sm btn-outline-primary" href="{% url 'sales_edit' r.id %}">编辑</a>
+                    <a class="btn btn-sm btn-outline-danger" href="{% url 'sales_delete' r.id %}">删除</a>
+                  </td>
+                </tr>
+              {% empty %}
+                <tr><td colspan="5" class="text-center text-muted py-5">暂无销售记录，请先添加</td></tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

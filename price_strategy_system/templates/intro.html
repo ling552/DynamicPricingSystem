@@ -1,0 +1,264 @@
+{% load static %}
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{{ system_name }}介绍页</title>
+  <style>
+    @page {
+      size: A4;
+      margin: 0;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html,
+    body {
+      margin: 0;
+      min-height: 100%;
+      background: #dfe8e2;
+      color: #1f2d2b;
+      font-family: "Microsoft YaHei", "PingFang SC", "Noto Sans SC", Arial, sans-serif;
+    }
+
+    body {
+      display: flex;
+      justify-content: center;
+      padding: 18px;
+    }
+
+    .intro-page {
+      width: 210mm;
+      min-height: 297mm;
+      background: #f6fbf7;
+      border: 2px solid #8fa89d;
+      box-shadow: 0 18px 60px rgba(20, 49, 45, .18);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    .intro-header {
+      padding: 20mm 18mm 8mm;
+      text-align: center;
+    }
+
+    .title-box {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 92mm;
+      min-height: 24mm;
+      padding: 4mm 10mm;
+      border: 2px solid #2e3f3a;
+      background: #ffffff;
+      box-shadow: 6px 6px 0 #cbd9d1;
+    }
+
+    .title-box h1 {
+      margin: 0;
+      font-size: 22pt;
+      line-height: 1.25;
+      letter-spacing: 0;
+      font-weight: 800;
+    }
+
+    .intro-main {
+      padding: 8mm 18mm 0;
+      display: grid;
+      grid-template-columns: 72mm 1fr;
+      gap: 14mm;
+      align-items: start;
+    }
+
+    .hero-shot {
+      border: 1.5px solid #445a55;
+      background: #d8eaf2;
+      aspect-ratio: 16 / 10;
+      overflow: hidden;
+      box-shadow: 0 10px 26px rgba(20, 49, 45, .15);
+    }
+
+    .hero-shot img,
+    .thumb img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .intro-copy {
+      padding-top: 9mm;
+    }
+
+    .intro-copy h2 {
+      margin: 0 0 9mm;
+      font-size: 18pt;
+      line-height: 1.2;
+      font-weight: 800;
+    }
+
+    .intro-copy p {
+      margin: 0 0 6mm;
+      font-size: 10.5pt;
+      line-height: 1.8;
+      color: #42514e;
+    }
+
+    .feature-list {
+      display: grid;
+      gap: 4mm;
+      margin-top: 9mm;
+    }
+
+    .feature-item {
+      border-bottom: 2px solid #d93b34;
+      padding-bottom: 1.8mm;
+      font-size: 11pt;
+      line-height: 1.35;
+      font-weight: 700;
+      color: #243833;
+    }
+
+    .shot-grid {
+      padding: 14mm 18mm 0;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 9mm;
+    }
+
+    .thumb-block {
+      min-width: 0;
+    }
+
+    .thumb {
+      aspect-ratio: 16 / 10;
+      border: 1.5px solid #41615c;
+      background: #d8eaf2;
+      overflow: hidden;
+      box-shadow: 0 8px 18px rgba(20, 49, 45, .13);
+    }
+
+    .thumb-label {
+      margin-top: 3mm;
+      font-size: 8.5pt;
+      line-height: 1.45;
+      color: #4d5d59;
+    }
+
+    .thumb-label strong {
+      display: block;
+      color: #203630;
+      font-size: 9.5pt;
+      margin-bottom: 1mm;
+    }
+
+    .info-footer {
+      margin-top: auto;
+      background: linear-gradient(135deg, #1a72be, #0f56a4);
+      color: #ffffff;
+      padding: 11mm 18mm 12mm;
+      display: grid;
+      grid-template-columns: 1.1fr 1fr;
+      gap: 12mm;
+      min-height: 44mm;
+    }
+
+    .info-row {
+      display: grid;
+      grid-template-columns: 20mm 1fr;
+      gap: 4mm;
+      align-items: baseline;
+      margin-bottom: 4mm;
+      font-size: 14pt;
+      line-height: 1.35;
+      font-weight: 800;
+    }
+
+    .info-row span {
+      font-size: 11pt;
+      font-weight: 500;
+      color: rgba(255, 255, 255, .88);
+    }
+
+    .footer-note {
+      align-self: end;
+      font-size: 9pt;
+      line-height: 1.7;
+      color: rgba(255, 255, 255, .82);
+    }
+
+    @media print {
+      html,
+      body {
+        width: 210mm;
+        height: 297mm;
+        background: #ffffff;
+        padding: 0;
+      }
+
+      .intro-page {
+        width: 210mm;
+        min-height: 297mm;
+        border: 0;
+        box-shadow: none;
+      }
+    }
+  </style>
+</head>
+<body>
+  <article class="intro-page">
+    <header class="intro-header">
+      <div class="title-box">
+        <h1>{{ system_name }}</h1>
+      </div>
+    </header>
+
+    <main>
+      <section class="intro-main">
+        <figure class="hero-shot">
+          <img src="{% static screenshots.0.image %}" alt="{{ screenshots.0.title }}横向界面截图">
+        </figure>
+
+        <div class="intro-copy">
+          <h2>系统介绍</h2>
+          <p>本系统面向商品经营与价格策略评估场景，围绕商品档案、销售记录、调价模拟和数据分析建立一套轻量化工作台。</p>
+          <p>用户可以录入商品成本、售价和历史销售数据，通过调价比例快速模拟销量与利润变化，并结合图表查看趋势结果。</p>
+          <div class="feature-list">
+            {% for feature in features %}
+              <div class="feature-item">{{ feature }}</div>
+            {% endfor %}
+          </div>
+        </div>
+      </section>
+
+      <section class="shot-grid">
+        {% for shot in screenshots|slice:"1:" %}
+          <div class="thumb-block">
+            <figure class="thumb">
+              <img src="{% static shot.image %}" alt="{{ shot.title }}横向界面截图">
+            </figure>
+            <div class="thumb-label">
+              <strong>{{ shot.title }}</strong>
+              {{ shot.caption }}
+            </div>
+          </div>
+        {% endfor %}
+      </section>
+    </main>
+
+    <footer class="info-footer">
+      <div>
+        <div class="info-row">课程名称：<span>计科创新项目实训</span></div>
+        <div class="info-row">学号：<span>202302010552</span></div>
+      </div>
+      <div>
+        <div class="info-row">姓名：<span>高海</span></div>
+      </div>
+    </footer>
+  </article>
+</body>
+</html>

@@ -1,0 +1,255 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}仪表盘 · 动态价格策略模拟与分析系统{% endblock %}
+{% block body_class %}app-bg page-bg-dashboard{% endblock %}
+{% block content %}
+<div class="row g-4">
+  <div class="col-12">
+    <div class="p-4 p-md-5 rounded-4 app-hero shadow-sm">
+      <div class="row align-items-center g-4">
+        <div class="col-12 col-lg-7">
+          <span class="app-eyebrow">Pricing Intelligence Workspace</span>
+          <h1 class="app-hero-title fw-semibold mb-3">用更直观的价格信号，驱动销量与利润的同步判断。</h1>
+          <p class="lead app-hero-copy mb-4">基于历史销售数据，快速模拟不同价格调整策略对销量与利润的影响，把商品、销售、模拟和分析整合到一个更清晰的工作台里。</p>
+          <div class="d-flex flex-wrap gap-2">
+            <a class="btn btn-primary" href="{% url 'product_create' %}">添加商品</a>
+            <a class="btn btn-outline-primary" href="{% url 'sales_create' %}">录入销售数据</a>
+            <a class="btn btn-outline-light app-btn-soft" href="{% url 'simulate' %}">开始策略模拟</a>
+          </div>
+          <div class="app-hero-metrics">
+            <div class="app-metric-pill">
+              <span class="label">工作流</span>
+              <span class="value">商品录入 → 销售沉淀 → 策略评估</span>
+            </div>
+            <div class="app-metric-pill">
+              <span class="label">核心焦点</span>
+              <span class="value">近 14 天收益与价格趋势联动查看</span>
+            </div>
+            <div class="app-metric-pill">
+              <span class="label">决策节奏</span>
+              <span class="value">先看利润，再回看敏感系数与销量波动</span>
+            </div>
+          </div>
+        </div>
+        <div class="col-12 col-lg-5">
+          <div class="row g-3">
+            <div class="col-12">
+              <div class="app-media app-banner-sm">
+                <img src="{% static 'images/hero-minimal-pastel.jpg' %}" alt="简约办公氛围图">
+              </div>
+            </div>
+            <div class="col-6">
+              <div class="card app-kpi shadow-sm">
+                <div class="card-body">
+                  <div class="text-muted small app-kpi-label">商品数量</div>
+                  <div class="h3 mb-0">{{ kpis.total_products }}</div>
+                </div>
+              </div>
+            </div>
+            <div class="col-6">
+              <div class="card app-kpi shadow-sm">
+                <div class="card-body">
+                  <div class="text-muted small app-kpi-label">销售记录</div>
+                  <div class="h3 mb-0">{{ kpis.total_sales_rows }}</div>
+                </div>
+              </div>
+            </div>
+            <div class="col-12">
+              <div class="card app-kpi shadow-sm">
+                <div class="card-body">
+                  <div class="text-muted small app-kpi-label">累计销售额 / 累计利润</div>
+                  <div class="d-flex justify-content-between align-items-end">
+                    <div class="h4 mb-0">¥ {{ kpis.revenue }}</div>
+                    <div class="h5 mb-0 text-success">¥ {{ kpis.profit }}</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-12 col-xl-8">
+    <div class="card shadow-sm app-card h-100">
+      <div class="card-body p-4">
+        <div class="app-section-head">
+          <h2 class="h5 mb-0 fw-semibold">近 14 天收益趋势</h2>
+          <span class="meta">销售额 vs 利润</span>
+        </div>
+        <div class="app-chart-shell">
+          <div id="trendChart" style="height: 320px;"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-12 col-xl-4">
+    <div class="card shadow-sm app-card h-100">
+      <div class="card-body p-4">
+        <div class="app-section-head">
+          <h2 class="h5 mb-0 fw-semibold">快速概览</h2>
+          <span class="meta">执行建议</span>
+        </div>
+        <div class="vstack gap-3">
+          <div class="p-3 rounded-3 app-info">
+            <div class="fw-semibold">建议流程</div>
+            <div class="small text-muted mt-1">1) 添加商品 → 2) 录入销售 → 3) 设置策略 → 4) 查看图表</div>
+          </div>
+          <div class="p-3 rounded-3 app-info">
+            <div class="fw-semibold">策略提示</div>
+            <div class="small text-muted mt-1">价格敏感系数越高，价格变化对销量影响越大。可在商品中调整。</div>
+          </div>
+          <div class="p-3 rounded-3 app-info">
+            <div class="fw-semibold">数据补充</div>
+            <div class="small text-muted mt-1">当数据不足时，图表会显示较少点位；建议录入至少 7 条销售记录。</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-12 col-lg-6">
+    <div class="card shadow-sm app-card h-100">
+      <div class="card-body p-4">
+        <div class="app-section-head">
+          <h2 class="h5 mb-0 fw-semibold">最近销售记录</h2>
+          <a class="btn btn-sm btn-outline-primary" href="{% url 'sales_list' %}">查看全部</a>
+        </div>
+        <div class="table-responsive">
+          <table class="table align-middle mb-0">
+            <thead>
+              <tr>
+                <th>商品</th>
+                <th>日期</th>
+                <th class="text-end">售价</th>
+                <th class="text-end">数量</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for r in sales %}
+                <tr>
+                  <td class="fw-semibold">{{ r.product.name }}</td>
+                  <td class="text-muted">{{ r.sale_date }}</td>
+                  <td class="text-end">¥ {{ r.price }}</td>
+                  <td class="text-end">{{ r.quantity }}</td>
+                </tr>
+              {% empty %}
+                <tr><td colspan="4" class="text-center text-muted py-4">暂无数据，先去录入销售记录吧</td></tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-12 col-lg-6">
+    <div class="card shadow-sm app-card h-100">
+      <div class="card-body p-4">
+        <div class="app-section-head">
+          <h2 class="h5 mb-0 fw-semibold">最近模拟结果</h2>
+          <a class="btn btn-sm btn-outline-primary" href="{% url 'simulate' %}">去模拟</a>
+        </div>
+        <div class="list-group list-group-flush">
+          {% for s in simulations %}
+            <a class="list-group-item list-group-item-action py-3" href="{% url 'simulation_detail' s.id %}">
+              <div class="d-flex justify-content-between">
+                <div>
+                  <div class="fw-semibold">{{ s.product.name }}</div>
+                  <div class="small text-muted">{{ s.strategy }}</div>
+                </div>
+                <div class="text-end">
+                  <div class="small text-muted">预测利润</div>
+                  <div class="fw-semibold">¥ {{ s.predicted_profit|floatformat:2 }}</div>
+                </div>
+              </div>
+            </a>
+          {% empty %}
+            <div class="text-center text-muted py-4">暂无模拟结果</div>
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+{{ chart|json_script:"dashboard-chart" }}
+<script>
+  const chartData = JSON.parse(document.getElementById('dashboard-chart').textContent);
+  const days = chartData.days || [];
+  const revenue = chartData.revenue || [];
+  const profit = chartData.profit || [];
+
+  const chartDom = document.getElementById('trendChart');
+  const myChart = echarts.init(chartDom);
+
+  myChart.setOption({
+    color: ['#0f766e', '#f97316'],
+    animationDuration: 900,
+    animationEasing: 'cubicOut',
+    tooltip: {
+      trigger: 'axis',
+      backgroundColor: 'rgba(20, 49, 45, 0.92)',
+      borderWidth: 0,
+      textStyle: { color: '#f8fbf8' }
+    },
+    legend: {
+      data: ['销售额', '利润'],
+      top: 0,
+      textStyle: { color: '#5f6d69', fontWeight: 700 }
+    },
+    grid: { left: 28, right: 18, top: 46, bottom: 28, containLabel: true },
+    xAxis: {
+      type: 'category',
+      data: days,
+      boundaryGap: false,
+      axisLabel: { rotate: 26, color: '#6d7b76' },
+      axisLine: { lineStyle: { color: 'rgba(20, 49, 45, 0.14)' } },
+      axisTick: { show: false }
+    },
+    yAxis: {
+      type: 'value',
+      axisLabel: { color: '#6d7b76' },
+      splitLine: { lineStyle: { color: 'rgba(20, 49, 45, 0.08)' } }
+    },
+    series: [
+      {
+        name: '销售额',
+        type: 'line',
+        smooth: true,
+        data: revenue,
+        symbol: 'circle',
+        symbolSize: 8,
+        lineStyle: { width: 3 },
+        areaStyle: {
+          color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
+            { offset: 0, color: 'rgba(15, 118, 110, 0.28)' },
+            { offset: 1, color: 'rgba(15, 118, 110, 0.02)' }
+          ])
+        }
+      },
+      {
+        name: '利润',
+        type: 'line',
+        smooth: true,
+        data: profit,
+        symbol: 'circle',
+        symbolSize: 8,
+        lineStyle: { width: 3 },
+        areaStyle: {
+          color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
+            { offset: 0, color: 'rgba(249, 115, 22, 0.24)' },
+            { offset: 1, color: 'rgba(249, 115, 22, 0.02)' }
+          ])
+        }
+      }
+    ]
+  });
+
+  window.addEventListener('resize', () => myChart.resize());
+</script>
+{% endblock %}

@@ -1,0 +1,294 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}数据分析 · 动态价格策略模拟与分析系统{% endblock %}
+{% block body_class %}app-bg page-bg-analysis{% endblock %}
+{% block content %}
+<div class="row g-4">
+  <div class="col-12">
+    <div class="d-flex flex-wrap justify-content-between align-items-center gap-2">
+      <div>
+        <span class="app-eyebrow mb-3">Trend Intelligence</span>
+        <h1 class="h4 fw-semibold mb-1">数据分析</h1>
+        <div class="text-muted">按时间维度查看价格、销量与利润趋势，可筛选商品与日期。</div>
+      </div>
+      <a class="btn btn-outline-primary" href="{% url 'sales_list' %}">查看销售数据</a>
+    </div>
+  </div>
+
+  <div class="col-12">
+    <div class="app-media app-banner">
+      <img src="{% static 'images/abstract-gradient.jpg' %}" alt="数据分析背景">
+    </div>
+  </div>
+
+  <div class="col-12">
+    <div class="card shadow-sm app-card">
+      <div class="card-body p-4">
+        <div class="app-page-summary">
+          <div>
+            <div class="text-muted small">筛选维度</div>
+            <div class="fw-semibold mt-1">商品、开始日期、结束日期组合分析</div>
+          </div>
+          <div>
+            <div class="text-muted small">推荐用法</div>
+            <div class="fw-semibold mt-1">先看价格变化，再对照销量与利润走势</div>
+          </div>
+          <div>
+            <div class="text-muted small">结果视角</div>
+            <div class="fw-semibold mt-1">重点关注高利润商品与平均成交价波动</div>
+          </div>
+        </div>
+        <form method="get" class="row g-3 align-items-end">
+          <div class="col-12 col-md-4">
+            <label class="form-label">商品</label>
+            {{ form.product }}
+          </div>
+          <div class="col-6 col-md-3">
+            <label class="form-label">开始日期</label>
+            {{ form.start_date }}
+          </div>
+          <div class="col-6 col-md-3">
+            <label class="form-label">结束日期</label>
+            {{ form.end_date }}
+          </div>
+          <div class="col-12 col-md-2 d-grid">
+            <button class="btn btn-primary">应用筛选</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-12 col-lg-3">
+    <div class="card shadow-sm app-card">
+      <div class="card-body p-4">
+        <div class="text-muted small">总销售额</div>
+        <div class="h4 mb-0">¥ {{ kpis.revenue }}</div>
+      </div>
+    </div>
+  </div>
+  <div class="col-12 col-lg-3">
+    <div class="card shadow-sm app-card">
+      <div class="card-body p-4">
+        <div class="text-muted small">总利润</div>
+        <div class="h4 mb-0 text-success">¥ {{ kpis.profit }}</div>
+      </div>
+    </div>
+  </div>
+  <div class="col-12 col-lg-3">
+    <div class="card shadow-sm app-card">
+      <div class="card-body p-4">
+        <div class="text-muted small">总销量</div>
+        <div class="h4 mb-0">{{ kpis.quantity }}</div>
+      </div>
+    </div>
+  </div>
+  <div class="col-12 col-lg-3">
+    <div class="card shadow-sm app-card">
+      <div class="card-body p-4">
+        <div class="text-muted small">平均成交价</div>
+        <div class="h4 mb-0">¥ {{ kpis.avg_price }}</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-12">
+    <div class="card shadow-sm app-card">
+      <div class="card-body p-4">
+        {% if has_data %}
+          <div class="row g-4">
+            <div class="col-12 col-lg-4">
+              <div class="app-section-head">
+                <h2 class="h6 fw-semibold mb-0">价格趋势</h2>
+                <span class="meta">平均成交价</span>
+              </div>
+              <div class="app-chart-shell">
+                <div id="priceChart" class="app-chart"></div>
+              </div>
+            </div>
+            <div class="col-12 col-lg-4">
+              <div class="app-section-head">
+                <h2 class="h6 fw-semibold mb-0">销量趋势</h2>
+                <span class="meta">每日总销量</span>
+              </div>
+              <div class="app-chart-shell">
+                <div id="salesChart" class="app-chart"></div>
+              </div>
+            </div>
+            <div class="col-12 col-lg-4">
+              <div class="app-section-head">
+                <h2 class="h6 fw-semibold mb-0">利润趋势</h2>
+                <span class="meta">每日总利润</span>
+              </div>
+              <div class="app-chart-shell">
+                <div id="profitChart" class="app-chart"></div>
+              </div>
+            </div>
+          </div>
+        {% else %}
+          <div class="text-center text-muted py-5">暂无数据，请先录入销售记录</div>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+
+  <div class="col-12">
+    <div class="card shadow-sm app-card">
+      <div class="card-body p-4">
+        <div class="app-section-head">
+          <h2 class="h5 mb-0 fw-semibold">高利润商品排行</h2>
+          <span class="meta">按利润排序（Top 5）</span>
+        </div>
+        <div class="table-responsive">
+          <table class="table align-middle mb-0">
+            <thead class="table-light">
+              <tr>
+                <th>商品</th>
+                <th class="text-end">销量</th>
+                <th class="text-end">销售额</th>
+                <th class="text-end">利润</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for p in top_products %}
+                <tr>
+                  <td class="fw-semibold">{{ p.name }}</td>
+                  <td class="text-end">{{ p.qty }}</td>
+                  <td class="text-end">¥ {{ p.revenue|floatformat:2 }}</td>
+                  <td class="text-end">¥ {{ p.profit|floatformat:2 }}</td>
+                </tr>
+              {% empty %}
+                <tr><td colspan="4" class="text-center text-muted py-4">暂无数据</td></tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+{{ chart|json_script:"analysis-chart" }}
+<script>
+  (() => {
+    const chartData = JSON.parse(document.getElementById('analysis-chart').textContent);
+    const days = chartData.days || [];
+    const priceAvg = chartData.price_avg || [];
+    const quantity = chartData.quantity || [];
+    const profit = chartData.profit || [];
+
+    const priceDom = document.getElementById('priceChart');
+    const salesDom = document.getElementById('salesChart');
+    const profitDom = document.getElementById('profitChart');
+
+    if (!priceDom || !salesDom || !profitDom) {
+      return;
+    }
+
+    const priceChart = echarts.init(priceDom);
+    const salesChart = echarts.init(salesDom);
+    const profitChart = echarts.init(profitDom);
+
+    const axisBase = {
+      axisLabel: { color: '#6d7b76' },
+      axisLine: { lineStyle: { color: 'rgba(20, 49, 45, 0.14)' } },
+      axisTick: { show: false }
+    };
+
+    const valueAxisBase = {
+      type: 'value',
+      axisLabel: { color: '#6d7b76' },
+      splitLine: { lineStyle: { color: 'rgba(20, 49, 45, 0.08)' } }
+    };
+
+    const tooltipBase = {
+      trigger: 'axis',
+      backgroundColor: 'rgba(20, 49, 45, 0.92)',
+      borderWidth: 0,
+      textStyle: { color: '#f8fbf8' }
+    };
+
+    priceChart.setOption({
+      color: ['#0ea5e9'],
+      animationDuration: 850,
+      animationEasing: 'cubicOut',
+      tooltip: tooltipBase,
+      grid: { left: 18, right: 12, top: 22, bottom: 18, containLabel: true },
+      xAxis: { ...axisBase, type: 'category', data: days, boundaryGap: false },
+      yAxis: valueAxisBase,
+      series: [{
+        name: '平均成交价',
+        type: 'line',
+        smooth: true,
+        data: priceAvg,
+        symbol: 'circle',
+        symbolSize: 7,
+        lineStyle: { width: 3 },
+        areaStyle: {
+          color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
+            { offset: 0, color: 'rgba(14, 165, 233, 0.22)' },
+            { offset: 1, color: 'rgba(14, 165, 233, 0.02)' }
+          ])
+        }
+      }]
+    });
+
+    salesChart.setOption({
+      color: ['#f97316'],
+      animationDuration: 850,
+      animationDelay: (idx) => idx * 60,
+      animationEasing: 'cubicOut',
+      tooltip: tooltipBase,
+      grid: { left: 18, right: 12, top: 22, bottom: 18, containLabel: true },
+      xAxis: { ...axisBase, type: 'category', data: days },
+      yAxis: valueAxisBase,
+      series: [{
+        name: '销量',
+        type: 'bar',
+        data: quantity,
+        barMaxWidth: 24,
+        itemStyle: {
+          borderRadius: [10, 10, 4, 4],
+          color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
+            { offset: 0, color: '#fb923c' },
+            { offset: 1, color: '#f97316' }
+          ])
+        }
+      }]
+    });
+
+    profitChart.setOption({
+      color: ['#0f766e'],
+      animationDuration: 850,
+      animationEasing: 'cubicOut',
+      tooltip: tooltipBase,
+      grid: { left: 18, right: 12, top: 22, bottom: 18, containLabel: true },
+      xAxis: { ...axisBase, type: 'category', data: days, boundaryGap: false },
+      yAxis: valueAxisBase,
+      series: [{
+        name: '利润',
+        type: 'line',
+        smooth: true,
+        data: profit,
+        symbol: 'circle',
+        symbolSize: 7,
+        lineStyle: { width: 3 },
+        areaStyle: {
+          color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
+            { offset: 0, color: 'rgba(15, 118, 110, 0.24)' },
+            { offset: 1, color: 'rgba(15, 118, 110, 0.02)' }
+          ])
+        }
+      }]
+    });
+
+    window.addEventListener('resize', () => {
+      priceChart.resize();
+      salesChart.resize();
+      profitChart.resize();
+    });
+  })();
+</script>
+{% endblock %}

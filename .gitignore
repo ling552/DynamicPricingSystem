@@ -1,0 +1,37 @@
+# Local tools and IDEs
+.idea/
+.playwright-cli/
+.venv/
+venv/
+tmp/
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# Django/runtime data
+*.sqlite3
+price_strategy_system/data/
+price_strategy_system/db.sqlite3
+
+# Logs
+*.log
+*.out.log
+*.err.log
+
+# Build artifacts
+build/
+dist/
+price_strategy_system/build/
+price_strategy_system/dist/
+*.spec
+
+# Generated presentation/report output
+output/
+
+# Unrelated folder
+springbootAfter/

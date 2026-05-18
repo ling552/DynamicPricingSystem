@@ -1,0 +1,54 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}登录 · 动态价格策略模拟与分析系统{% endblock %}
+{% block body_class %}app-bg page-bg-login{% endblock %}
+{% block content %}
+<div class="row justify-content-center app-auth-shell">
+  <div class="col-12 col-lg-9 col-xl-8">
+    <div class="card shadow-sm app-card overflow-hidden">
+      <div class="row g-0 align-items-stretch">
+        <div class="col-12 col-md-5">
+          <div class="h-100 app-media">
+            <img src="{% static 'images/login-pastel-flatlay.jpg' %}" alt="简约文具平铺">
+          </div>
+        </div>
+        <div class="col-12 col-md-7">
+          <div class="card-body p-4 p-md-5 h-100 d-flex flex-column justify-content-center">
+            <h2 class="h4 fw-semibold mb-3">欢迎回来</h2>
+            <p class="text-muted mb-4">登录后可管理商品、录入销售数据并进行定价策略模拟。</p>
+
+            {% if form.non_field_errors %}
+              <div class="alert alert-danger shadow-sm">{{ form.non_field_errors }}</div>
+            {% endif %}
+
+            <form method="post" class="vstack gap-3">
+              {% csrf_token %}
+              {% if next %}<input type="hidden" name="next" value="{{ next }}">{% endif %}
+              <div>
+                <label class="form-label">用户名</label>
+                {{ form.username }}
+                {% if form.username.errors %}
+                  <div class="text-danger small mt-1">{{ form.username.errors }}</div>
+                {% endif %}
+              </div>
+              <div>
+                <label class="form-label">密码</label>
+                {{ form.password }}
+                {% if form.password.errors %}
+                  <div class="text-danger small mt-1">{{ form.password.errors }}</div>
+                {% endif %}
+              </div>
+              <button class="btn btn-primary w-100">登录</button>
+            </form>
+
+            <div class="d-flex justify-content-between align-items-center mt-4">
+              <span class="text-muted small">还没有账号？</span>
+              <a href="{% url 'register' %}" class="btn btn-sm btn-outline-primary">去注册</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

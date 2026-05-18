@@ -1,0 +1,159 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}模拟结果 · 动态价格策略模拟与分析系统{% endblock %}
+{% block body_class %}app-bg page-bg-result{% endblock %}
+{% block content %}
+<div class="row g-4">
+  <div class="col-12">
+    <div class="d-flex flex-wrap justify-content-between align-items-center gap-2">
+      <div>
+        <span class="app-eyebrow mb-3">Simulation Snapshot</span>
+        <h1 class="h4 fw-semibold mb-1">模拟结果</h1>
+        <div class="text-muted">{{ result.product.name }} · {{ result.strategy }}</div>
+      </div>
+      <div class="d-flex gap-2">
+        <a class="btn btn-outline-primary" href="{% url 'simulate' %}">继续模拟</a>
+        <a class="btn btn-outline-secondary" href="{% url 'dashboard' %}">返回仪表盘</a>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-12 col-xl-4">
+    <div class="card shadow-sm app-card">
+      <div class="card-body p-4">
+        <h2 class="h6 fw-semibold mb-3">核心指标对比</h2>
+        <div class="row g-3">
+          <div class="col-12">
+            <div class="p-3 rounded-3 app-info">
+              <div class="small text-muted">价格（基准 → 调整后）</div>
+              <div class="h5 mb-0">¥ {{ result.base_price|floatformat:2 }} → ¥ {{ result.new_price|floatformat:2 }}</div>
+            </div>
+          </div>
+          <div class="col-12">
+            <div class="p-3 rounded-3 app-info">
+              <div class="small text-muted">销量（基准 → 预测）</div>
+              <div class="h5 mb-0">{{ result.base_sales }} → {{ result.predicted_sales }}</div>
+            </div>
+          </div>
+          <div class="col-12">
+            <div class="p-3 rounded-3 app-info">
+              <div class="small text-muted">利润（基准 → 预测）</div>
+              <div class="h5 mb-0">¥ {{ result.base_profit|floatformat:2 }} → ¥ {{ result.predicted_profit|floatformat:2 }}</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="mt-4">
+          <div class="small text-muted">价格变化率</div>
+          <div class="fw-semibold">{{ price_change_percent }}%</div>
+        </div>
+
+        <div class="app-media app-banner-sm mt-4">
+          <img src="{% static 'images/laptop-graphs.jpg' %}" alt="数据图表">
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-12 col-xl-8">
+    <div class="card shadow-sm app-card h-100">
+      <div class="card-body p-4">
+        <div class="app-section-head">
+          <h2 class="h5 mb-0 fw-semibold">可视化对比</h2>
+          <span class="meta">销量 / 利润 / 价格</span>
+        </div>
+        <div class="app-chart-shell">
+          <div id="resultChart" style="height: 360px;"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+{{ chart|json_script:"result-chart" }}
+<script>
+  const chartData = JSON.parse(document.getElementById('result-chart').textContent);
+  const labels = chartData.labels || [];
+  const sales = chartData.sales || [];
+  const profit = chartData.profit || [];
+  const price = chartData.price || [];
+
+  const chartDom = document.getElementById('resultChart');
+  const myChart = echarts.init(chartDom);
+
+  myChart.setOption({
+    color: ['#0ea5e9', '#0f766e', '#f97316'],
+    animationDuration: 900,
+    animationEasing: 'cubicOut',
+    tooltip: {
+      trigger: 'axis',
+      backgroundColor: 'rgba(20, 49, 45, 0.92)',
+      borderWidth: 0,
+      textStyle: { color: '#f8fbf8' }
+    },
+    legend: {
+      data: ['销量', '利润', '价格'],
+      top: 0,
+      textStyle: { color: '#5f6d69', fontWeight: 700 }
+    },
+    grid: { left: 28, right: 18, top: 48, bottom: 28, containLabel: true },
+    xAxis: { type: 'category', data: labels },
+    yAxis: [
+      {
+        type: 'value',
+        name: '销量',
+        nameTextStyle: { color: '#6d7b76' },
+        axisLabel: { color: '#6d7b76' },
+        splitLine: { lineStyle: { color: 'rgba(20, 49, 45, 0.08)' } }
+      },
+      {
+        type: 'value',
+        name: '利润/价格',
+        nameTextStyle: { color: '#6d7b76' },
+        axisLabel: { color: '#6d7b76' },
+        splitLine: { show: false }
+      }
+    ],
+    series: [
+      {
+        name: '销量',
+        type: 'bar',
+        data: sales,
+        yAxisIndex: 0,
+        barMaxWidth: 34,
+        itemStyle: {
+          borderRadius: [12, 12, 4, 4],
+          color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
+            { offset: 0, color: '#38bdf8' },
+            { offset: 1, color: '#0ea5e9' }
+          ])
+        }
+      },
+      {
+        name: '利润',
+        type: 'line',
+        smooth: true,
+        data: profit,
+        yAxisIndex: 1,
+        symbol: 'circle',
+        symbolSize: 8,
+        lineStyle: { width: 3 }
+      },
+      {
+        name: '价格',
+        type: 'line',
+        smooth: true,
+        data: price,
+        yAxisIndex: 1,
+        symbol: 'circle',
+        symbolSize: 8,
+        lineStyle: { width: 3 }
+      }
+    ]
+  });
+
+  window.addEventListener('resize', () => myChart.resize());
+</script>
+{% endblock %}

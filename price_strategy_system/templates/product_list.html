@@ -1,0 +1,64 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}商品管理 · 动态价格策略模拟与分析系统{% endblock %}
+{% block body_class %}app-bg page-bg-products{% endblock %}
+{% block content %}
+<div class="row g-4">
+  <div class="col-12">
+    <div class="d-flex flex-wrap justify-content-between align-items-center gap-2">
+      <div>
+        <h1 class="h4 fw-semibold mb-1">商品管理</h1>
+        <div class="text-muted">维护商品基础信息、成本、价格与价格敏感系数。</div>
+      </div>
+      <div class="d-flex gap-2">
+        <a class="btn btn-primary" href="{% url 'product_create' %}">添加商品</a>
+        <a class="btn btn-outline-primary" href="/admin/pricing_app/product/" target="_blank">后台查看</a>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-12">
+    <div class="app-media app-banner">
+      <img src="{% static 'images/product-list-banner-20260323.jpg' %}" alt="零售货架">
+    </div>
+  </div>
+
+  <div class="col-12">
+    <div class="card shadow-sm app-card">
+      <div class="card-body p-0">
+        <div class="table-responsive">
+          <table class="table align-middle mb-0">
+            <thead class="table-light">
+              <tr>
+                <th class="ps-4">名称</th>
+                <th>类别</th>
+                <th class="text-end">当前价格</th>
+                <th class="text-end">成本</th>
+                <th class="text-end">敏感系数</th>
+                <th class="text-end pe-4">操作</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for p in products %}
+                <tr>
+                  <td class="ps-4 fw-semibold">{{ p.name }}</td>
+                  <td class="text-muted">{{ p.category|default:'-' }}</td>
+                  <td class="text-end">¥ {{ p.price }}</td>
+                  <td class="text-end">¥ {{ p.cost }}</td>
+                  <td class="text-end">{{ p.price_sensitivity }}</td>
+                  <td class="text-end pe-4">
+                    <a class="btn btn-sm btn-outline-primary" href="{% url 'product_edit' p.id %}">编辑</a>
+                    <a class="btn btn-sm btn-outline-danger" href="{% url 'product_delete' p.id %}">删除</a>
+                  </td>
+                </tr>
+              {% empty %}
+                <tr><td colspan="6" class="text-center text-muted py-5">暂无商品，请先添加</td></tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

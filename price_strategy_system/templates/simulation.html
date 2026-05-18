@@ -1,0 +1,105 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}策略模拟 · 动态价格策略模拟与分析系统{% endblock %}
+{% block body_class %}app-bg page-bg-simulate{% endblock %}
+{% block content %}
+<div class="row g-4">
+  <div class="col-12">
+    <div class="d-flex flex-wrap justify-content-between align-items-center gap-2">
+      <div>
+        <span class="app-eyebrow mb-3">Scenario Lab</span>
+        <h1 class="h4 fw-semibold mb-1">价格策略模拟</h1>
+        <div class="text-muted">输入价格调整比例，系统将预测销量与利润变化，并生成对比图表。</div>
+      </div>
+      <a class="btn btn-outline-primary" href="/admin/pricing_app/simulationresult/" target="_blank">后台查看结果</a>
+    </div>
+  </div>
+
+  <div class="col-12 col-xl-7">
+    <div class="card shadow-sm app-card">
+      <div class="card-body p-4 p-md-5">
+        <div class="app-page-summary mb-4">
+          <div>
+            <div class="text-muted small">操作方式</div>
+            <div class="fw-semibold mt-1">先选商品，再输入涨价或降价比例</div>
+          </div>
+          <div>
+            <div class="text-muted small">结果重点</div>
+            <div class="fw-semibold mt-1">优先观察利润变化，再判断销量回落幅度</div>
+          </div>
+          <div>
+            <div class="text-muted small">建议区间</div>
+            <div class="fw-semibold mt-1">小步试探 3% 到 8%，更适合快速迭代</div>
+          </div>
+        </div>
+        <form method="post" class="row g-3">
+          {% csrf_token %}
+          <div class="col-12">
+            <label class="form-label">选择商品</label>
+            {{ form.product }}
+          </div>
+          <div class="col-12">
+            <label class="form-label">价格调整比例(%)</label>
+            {{ form.price_change_rate }}
+            <div class="form-text">示例：5 表示涨价 5%；-10 表示降价 10%。</div>
+          </div>
+          <div class="col-12 d-flex gap-2 mt-2">
+            <button class="btn btn-primary">开始模拟</button>
+            <a class="btn btn-outline-secondary" href="{% url 'dashboard' %}">返回仪表盘</a>
+          </div>
+        </form>
+
+        <div class="mt-5">
+          <div class="app-section-head">
+            <h2 class="h6 fw-semibold mb-0">常见策略示例</h2>
+            <span class="meta">快速参考</span>
+          </div>
+          <div class="row g-2">
+            <div class="col-12 col-md-4"><div class="p-3 rounded-3 app-info">提高价格 5%</div></div>
+            <div class="col-12 col-md-4"><div class="p-3 rounded-3 app-info">降低价格 10%</div></div>
+            <div class="col-12 col-md-4"><div class="p-3 rounded-3 app-info">自定义策略</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-12 col-xl-5">
+    <div class="card shadow-sm app-card h-100">
+      <div class="card-body p-4">
+        <div class="app-media app-banner-sm mb-4">
+          <img src="{% static 'images/data-meeting.jpg' %}" alt="数据分析讨论">
+        </div>
+        <div class="app-section-head">
+          <h2 class="h5 mb-0 fw-semibold">最近模拟</h2>
+          <span class="meta">点击查看详情</span>
+        </div>
+        <div class="list-group list-group-flush">
+          {% for r in last_results %}
+            <a class="list-group-item list-group-item-action py-3" href="{% url 'simulation_detail' r.id %}">
+              <div class="d-flex justify-content-between">
+                <div>
+                  <div class="fw-semibold">{{ r.product.name }}</div>
+                  <div class="small text-muted">{{ r.strategy }}</div>
+                </div>
+                <div class="text-end">
+                  <div class="small text-muted">预测销量</div>
+                  <div class="fw-semibold">{{ r.predicted_sales }}</div>
+                </div>
+              </div>
+            </a>
+          {% empty %}
+            <div class="text-center text-muted py-5">暂无模拟记录</div>
+          {% endfor %}
+        </div>
+
+        <div class="mt-4 p-3 rounded-3 app-info">
+          <div class="fw-semibold">模型说明</div>
+          <div class="small text-muted mt-1">销量变化率 = 价格变化率 × 价格敏感系数</div>
+          <div class="small text-muted">预测销量 = 原销量 × (1 - 销量变化率)</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
