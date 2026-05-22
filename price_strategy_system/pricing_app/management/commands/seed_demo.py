@@ -13,41 +13,60 @@ from pricing_app.services import simulate_price_change
 
 
 class Command(BaseCommand):
-    help = "Seed demo data (demo user, products, sales records, simulation results)."
+    help = "Seed demo data (root superuser, demo user, products, sales records, simulation results)."
 
     def add_arguments(self, parser):
         parser.add_argument("--username", default="demo")
         parser.add_argument("--password", default="demo12345")
+        parser.add_argument("--root-username", default="root")
+        parser.add_argument("--root-password", default="root12345")
         parser.add_argument("--products", type=int, default=3)
         parser.add_argument("--days", type=int, default=14)
         parser.add_argument("--force", action="store_true", help="Recreate demo data")
+
+    def _ensure_superuser(self, username: str, password: str) -> User:
+        user, created = User.objects.get_or_create(username=username)
+        # 始终确保两个保留账号是超级管理员
+        changed = created
+        if not user.is_superuser:
+            user.is_superuser = True
+            changed = True
+        if not user.is_staff:
+            user.is_staff = True
+            changed = True
+        if not user.is_active:
+            user.is_active = True
+            changed = True
+        if created or not user.check_password(password):
+            user.set_password(password)
+            changed = True
+        if changed:
+            user.save()
+        return user
 
     @transaction.atomic
     def handle(self, *args, **options):
         username: str = options["username"]
         password: str = options["password"]
+        root_username: str = options["root_username"]
+        root_password: str = options["root_password"]
         products_n: int = options["products"]
         days: int = options["days"]
         force: bool = bool(options["force"])
 
-        user, created = User.objects.get_or_create(username=username)
-        if created:
-            user.set_password(password)
-            user.is_staff = True
-            user.is_superuser = True
-            user.save()
-        else:
-            if force:
-                SimulationResult.objects.filter(created_by=user).delete()
-                SalesRecord.objects.filter(product__created_by=user).delete()
-                Product.objects.filter(created_by=user).delete()
-            if not user.check_password(password):
-                user.set_password(password)
-                user.save()
+        # 保证 root 与 demo 两个超级管理员账号存在
+        root_user = self._ensure_superuser(root_username, root_password)
+        user = self._ensure_superuser(username, password)
+
+        if force:
+            SimulationResult.objects.filter(created_by=user).delete()
+            SalesRecord.objects.filter(product__created_by=user).delete()
+            Product.objects.filter(created_by=user).delete()
 
         if Product.objects.filter(created_by=user).exists() and not force:
             self.stdout.write(self.style.WARNING("Demo data already exists. Use --force to recreate."))
             self.stdout.write(self.style.SUCCESS(f"Login: {username} / {password}"))
+            self.stdout.write(self.style.SUCCESS(f"Root : {root_username} / {root_password}"))
             return
 
         categories = ["饮料", "零食", "日用品", "电子"]
@@ -124,4 +143,5 @@ class Command(BaseCommand):
 
         self.stdout.write(self.style.SUCCESS("Seed demo data done."))
         self.stdout.write(self.style.SUCCESS(f"Login: {username} / {password}"))
+        self.stdout.write(self.style.SUCCESS(f"Root : {root_username} / {root_password}"))
         self.stdout.write(self.style.SUCCESS("Admin: /admin/ (same credentials)"))

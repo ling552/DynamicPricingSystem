@@ -1,0 +1,130 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}编辑用户 · {{ target_user.username }}{% endblock %}
+{% block body_class %}app-bg page-bg-dashboard{% endblock %}
+{% block content %}
+<div class="row g-4">
+  <div class="col-12">
+    <div class="p-4 p-md-5 rounded-4 app-hero shadow-sm">
+      <div class="row align-items-center g-4">
+        <div class="col-12 col-lg-8">
+          <span class="app-eyebrow">Manage User</span>
+          <h1 class="app-hero-title fw-semibold mb-3">编辑用户：{{ target_user.username }}</h1>
+          <p class="lead app-hero-copy mb-3">维护此用户的姓名、邮箱、角色与启用状态，或为其重置密码。{% if editing_self %}你正在编辑自己的账号——超级管理员权限与启用状态不可修改。{% endif %}</p>
+          <div class="d-flex flex-wrap gap-2">
+            <a class="btn btn-outline-primary" href="{% url 'user_list' %}">返回列表</a>
+            <a class="btn btn-outline-secondary" href="{% url 'profile' %}">个人中心</a>
+          </div>
+        </div>
+        <div class="col-12 col-lg-4">
+          <div class="profile-avatar-card">
+            <div class="profile-avatar">{{ target_user.username|slice:":1"|upper }}</div>
+            <div class="profile-avatar-meta">
+              <div class="profile-avatar-name">{{ target_user.get_full_name|default:target_user.username }}</div>
+              <div class="profile-avatar-sub">{{ target_user.email|default:"未设置邮箱" }}</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-12 col-lg-7">
+    <div class="card shadow-sm app-card h-100">
+      <div class="card-body p-4">
+        <div class="app-section-head">
+          <h2 class="h5 mb-0 fw-semibold">基本资料与权限</h2>
+          <span class="meta">超管 / 员工 / 启用</span>
+        </div>
+        <form method="post" novalidate>
+          {% csrf_token %}
+          <input type="hidden" name="action" value="profile">
+          <div class="row g-3">
+            <div class="col-md-6">
+              <label class="form-label" for="{{ user_form.username.id_for_label }}">{{ user_form.username.label }}</label>
+              {{ user_form.username }}
+              {% if user_form.username.field.disabled %}<div class="form-text text-warning-emphasis">{{ user_form.username.help_text|default:"保留账号，用户名不可修改" }}</div>{% endif %}
+              {% if user_form.username.errors %}<div class="invalid-feedback d-block">{{ user_form.username.errors|join:"，" }}</div>{% endif %}
+            </div>
+            <div class="col-md-6">
+              <label class="form-label" for="{{ user_form.email.id_for_label }}">{{ user_form.email.label }}</label>
+              {{ user_form.email }}
+              {% if user_form.email.errors %}<div class="invalid-feedback d-block">{{ user_form.email.errors|join:"，" }}</div>{% endif %}
+            </div>
+            <div class="col-md-6">
+              <label class="form-label" for="{{ user_form.first_name.id_for_label }}">{{ user_form.first_name.label }}</label>
+              {{ user_form.first_name }}
+            </div>
+            <div class="col-md-6">
+              <label class="form-label" for="{{ user_form.last_name.id_for_label }}">{{ user_form.last_name.label }}</label>
+              {{ user_form.last_name }}
+            </div>
+            <div class="col-12">
+              <div class="permission-grid">
+                <label class="permission-card {% if user_form.is_active.field.disabled %}is-locked{% endif %}">
+                  {{ user_form.is_active }}
+                  <div>
+                    <div class="permission-title">{{ user_form.is_active.label }}</div>
+                    <div class="permission-help">{{ user_form.is_active.help_text|default:"控制账号是否可登录" }}</div>
+                  </div>
+                </label>
+                <label class="permission-card {% if user_form.is_staff.field.disabled %}is-locked{% endif %}">
+                  {{ user_form.is_staff }}
+                  <div>
+                    <div class="permission-title">{{ user_form.is_staff.label }}</div>
+                    <div class="permission-help">{{ user_form.is_staff.help_text|default:"允许访问 /admin/ 后台与用户管理" }}</div>
+                  </div>
+                </label>
+                <label class="permission-card {% if user_form.is_superuser.field.disabled %}is-locked{% endif %}">
+                  {{ user_form.is_superuser }}
+                  <div>
+                    <div class="permission-title">{{ user_form.is_superuser.label }}</div>
+                    <div class="permission-help">{{ user_form.is_superuser.help_text|default:"拥有最高管理权限" }}</div>
+                  </div>
+                </label>
+              </div>
+            </div>
+          </div>
+          <div class="mt-4 d-flex justify-content-end">
+            <button type="submit" class="btn btn-primary">保存资料</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-12 col-lg-5">
+    <div class="card shadow-sm app-card h-100">
+      <div class="card-body p-4">
+        <div class="app-section-head">
+          <h2 class="h5 mb-0 fw-semibold">重置密码</h2>
+          <span class="meta">留空则不修改</span>
+        </div>
+        <form method="post" novalidate>
+          {% csrf_token %}
+          <input type="hidden" name="action" value="password">
+          <div class="vstack gap-3">
+            <div>
+              <label class="form-label" for="{{ password_form.new_password1.id_for_label }}">{{ password_form.new_password1.label }}</label>
+              {{ password_form.new_password1 }}
+              {% if password_form.new_password1.help_text %}<div class="form-text">{{ password_form.new_password1.help_text }}</div>{% endif %}
+              {% if password_form.new_password1.errors %}<div class="invalid-feedback d-block">{{ password_form.new_password1.errors|join:"，" }}</div>{% endif %}
+            </div>
+            <div>
+              <label class="form-label" for="{{ password_form.new_password2.id_for_label }}">{{ password_form.new_password2.label }}</label>
+              {{ password_form.new_password2 }}
+              {% if password_form.new_password2.errors %}<div class="invalid-feedback d-block">{{ password_form.new_password2.errors|join:"，" }}</div>{% endif %}
+            </div>
+            {% if password_form.non_field_errors %}
+              <div class="alert alert-warning mb-0">{{ password_form.non_field_errors|join:"，" }}</div>
+            {% endif %}
+          </div>
+          <div class="mt-4 d-flex justify-content-end">
+            <button type="submit" class="btn btn-primary">重置密码</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

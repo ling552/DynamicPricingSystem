@@ -192,26 +192,26 @@
     const profitChart = echarts.init(profitDom);
 
     const axisBase = {
-      axisLabel: { color: '#6d7b76' },
-      axisLine: { lineStyle: { color: 'rgba(20, 49, 45, 0.14)' } },
+      axisLabel: { color: '#836274' },
+      axisLine: { lineStyle: { color: 'rgba(61, 15, 35, 0.14)' } },
       axisTick: { show: false }
     };
 
     const valueAxisBase = {
       type: 'value',
-      axisLabel: { color: '#6d7b76' },
-      splitLine: { lineStyle: { color: 'rgba(20, 49, 45, 0.08)' } }
+      axisLabel: { color: '#836274' },
+      splitLine: { lineStyle: { color: 'rgba(61, 15, 35, 0.08)' } }
     };
 
     const tooltipBase = {
       trigger: 'axis',
-      backgroundColor: 'rgba(20, 49, 45, 0.92)',
+      backgroundColor: 'rgba(61, 15, 35, 0.92)',
       borderWidth: 0,
-      textStyle: { color: '#f8fbf8' }
+      textStyle: { color: '#FFF5F9' }
     };
 
     priceChart.setOption({
-      color: ['#0ea5e9'],
+      color: ['#A855F7'],
       animationDuration: 850,
       animationEasing: 'cubicOut',
       tooltip: tooltipBase,
@@ -228,15 +228,15 @@
         lineStyle: { width: 3 },
         areaStyle: {
           color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
-            { offset: 0, color: 'rgba(14, 165, 233, 0.22)' },
-            { offset: 1, color: 'rgba(14, 165, 233, 0.02)' }
+            { offset: 0, color: 'rgba(168, 85, 247, 0.22)' },
+            { offset: 1, color: 'rgba(168, 85, 247, 0.02)' }
           ])
         }
       }]
     });
 
     salesChart.setOption({
-      color: ['#f97316'],
+      color: ['#EC4899'],
       animationDuration: 850,
       animationDelay: (idx) => idx * 60,
       animationEasing: 'cubicOut',
@@ -252,15 +252,15 @@
         itemStyle: {
           borderRadius: [10, 10, 4, 4],
           color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
-            { offset: 0, color: '#fb923c' },
-            { offset: 1, color: '#f97316' }
+            { offset: 0, color: '#F472B6' },
+            { offset: 1, color: '#EC4899' }
           ])
         }
       }]
     });
 
     profitChart.setOption({
-      color: ['#0f766e'],
+      color: ['#BE2A6D'],
       animationDuration: 850,
       animationEasing: 'cubicOut',
       tooltip: tooltipBase,
@@ -277,8 +277,8 @@
         lineStyle: { width: 3 },
         areaStyle: {
           color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
-            { offset: 0, color: 'rgba(15, 118, 110, 0.24)' },
-            { offset: 1, color: 'rgba(15, 118, 110, 0.02)' }
+            { offset: 0, color: 'rgba(190, 42, 109, 0.24)' },
+            { offset: 1, color: 'rgba(190, 42, 109, 0.02)' }
           ])
         }
       }]

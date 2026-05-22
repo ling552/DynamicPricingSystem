@@ -19,4 +19,7 @@ urlpatterns = [
     path("simulate/", views.simulate, name="simulate"),
     path("results/<int:pk>/", views.simulation_detail, name="simulation_detail"),
     path("analysis/", views.analysis_dashboard, name="analysis_dashboard"),
+    path("profile/", views.profile_view, name="profile"),
+    path("users/", views.user_list, name="user_list"),
+    path("users/<int:pk>/edit/", views.user_edit, name="user_edit"),
 ]

@@ -1,13 +1,18 @@
 from django.contrib import messages
-from django.contrib.auth import login, logout
-from django.contrib.auth.decorators import login_required
+from django.contrib.auth import login, logout, update_session_auth_hash
+from django.contrib.auth.decorators import login_required, user_passes_test
+from django.contrib.auth.models import User
 from django.shortcuts import get_object_or_404, redirect, render
 from django.views.decorators.http import require_http_methods
 
 from .forms import (
+    AdminPasswordResetForm,
+    AdminUserForm,
     AnalysisFilterForm,
     LoginForm,
     ProductForm,
+    ProfileForm,
+    ProfilePasswordForm,
     RegisterForm,
     SalesRecordForm,
     SimulationForm,
@@ -426,3 +431,131 @@ def analysis_dashboard(request):
         "has_data": bool(records_list),
     }
     return render(request, "analysis.html", context)
+
+
+# ============= 用户中心 =============
+
+
+@login_required
+@require_http_methods(["GET", "POST"])
+def profile_view(request):
+    """当前登录用户查看与修改自己的资料。"""
+    user = request.user
+
+    if request.method == "POST":
+        action = request.POST.get("action", "profile")
+        profile_form = ProfileForm(instance=user)
+        password_form = ProfilePasswordForm(user=user)
+
+        if action == "password":
+            password_form = ProfilePasswordForm(request.POST, user=user)
+            if password_form.is_valid():
+                if password_form.cleaned_data.get("change_password"):
+                    user.set_password(password_form.cleaned_data["new_password1"])
+                    user.save(update_fields=["password"])
+                    update_session_auth_hash(request, user)
+                    messages.success(request, "密码已更新")
+                else:
+                    messages.info(request, "未填写密码字段，已忽略")
+                return redirect("profile")
+        else:
+            profile_form = ProfileForm(request.POST, instance=user)
+            if profile_form.is_valid():
+                profile_form.save()
+                messages.success(request, "资料已更新")
+                return redirect("profile")
+    else:
+        profile_form = ProfileForm(instance=user)
+        password_form = ProfilePasswordForm(user=user)
+
+    context = {
+        "profile_form": profile_form,
+        "password_form": password_form,
+        "target_user": user,
+    }
+    return render(request, "profile.html", context)
+
+
+def _superuser_required(view_func):
+    """仅超级管理员可访问。"""
+    return user_passes_test(lambda u: u.is_authenticated and u.is_superuser)(view_func)
+
+
+def _staff_required(view_func):
+    """超级管理员或管理员（is_staff）可访问。"""
+    return user_passes_test(
+        lambda u: u.is_authenticated and (u.is_staff or u.is_superuser)
+    )(view_func)
+
+
+@login_required
+@_staff_required
+def user_list(request):
+    users = User.objects.all().order_by("-is_superuser", "-is_staff", "username")
+    return render(request, "user_list.html", {"users": users})
+
+
+@login_required
+@_staff_required
+@require_http_methods(["GET", "POST"])
+def user_edit(request, pk):
+    target = get_object_or_404(User, pk=pk)
+    editing_self = request.user.pk == target.pk
+
+    # 管理员（非超管）越级拦截：不能编辑超级管理员（编辑自己除外）
+    if (
+        not request.user.is_superuser
+        and target.is_superuser
+        and not editing_self
+    ):
+        messages.error(request, "你没有权限修改超级管理员账号")
+        return redirect("user_list")
+
+    if request.method == "POST":
+        action = request.POST.get("action", "profile")
+        user_form = AdminUserForm(
+            instance=target, current_user=request.user, target_user=target
+        )
+        password_form = AdminPasswordResetForm(target_user=target)
+
+        if action == "password":
+            # 管理员不能为超级管理员重置密码（再次防御）
+            if not request.user.is_superuser and target.is_superuser and not editing_self:
+                messages.error(request, "你没有权限重置超级管理员的密码")
+                return redirect("user_list")
+            password_form = AdminPasswordResetForm(request.POST, target_user=target)
+            if password_form.is_valid():
+                if password_form.cleaned_data.get("change_password"):
+                    target.set_password(password_form.cleaned_data["new_password1"])
+                    target.save(update_fields=["password"])
+                    if editing_self:
+                        update_session_auth_hash(request, target)
+                    messages.success(request, f"已为用户 {target.username} 重置密码")
+                else:
+                    messages.info(request, "未填写新密码，已忽略")
+                return redirect("user_edit", pk=target.pk)
+        else:
+            user_form = AdminUserForm(
+                request.POST,
+                instance=target,
+                current_user=request.user,
+                target_user=target,
+            )
+            if user_form.is_valid():
+                user_form.save()
+                messages.success(request, f"用户 {target.username} 资料已更新")
+                return redirect("user_edit", pk=target.pk)
+    else:
+        user_form = AdminUserForm(
+            instance=target, current_user=request.user, target_user=target
+        )
+        password_form = AdminPasswordResetForm(target_user=target)
+
+    context = {
+        "user_form": user_form,
+        "password_form": password_form,
+        "target_user": target,
+        "editing_self": editing_self,
+        "can_edit_superuser_field": request.user.is_superuser,
+    }
+    return render(request, "user_form.html", context)

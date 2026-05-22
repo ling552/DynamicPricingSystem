@@ -84,19 +84,19 @@
   const myChart = echarts.init(chartDom);
 
   myChart.setOption({
-    color: ['#0ea5e9', '#0f766e', '#f97316'],
+    color: ['#A855F7', '#BE2A6D', '#EC4899'],
     animationDuration: 900,
     animationEasing: 'cubicOut',
     tooltip: {
       trigger: 'axis',
-      backgroundColor: 'rgba(20, 49, 45, 0.92)',
+      backgroundColor: 'rgba(61, 15, 35, 0.92)',
       borderWidth: 0,
-      textStyle: { color: '#f8fbf8' }
+      textStyle: { color: '#FFF5F9' }
     },
     legend: {
       data: ['销量', '利润', '价格'],
       top: 0,
-      textStyle: { color: '#5f6d69', fontWeight: 700 }
+      textStyle: { color: '#836274', fontWeight: 700 }
     },
     grid: { left: 28, right: 18, top: 48, bottom: 28, containLabel: true },
     xAxis: { type: 'category', data: labels },
@@ -104,15 +104,15 @@
       {
         type: 'value',
         name: '销量',
-        nameTextStyle: { color: '#6d7b76' },
-        axisLabel: { color: '#6d7b76' },
-        splitLine: { lineStyle: { color: 'rgba(20, 49, 45, 0.08)' } }
+        nameTextStyle: { color: '#836274' },
+        axisLabel: { color: '#836274' },
+        splitLine: { lineStyle: { color: 'rgba(61, 15, 35, 0.08)' } }
       },
       {
         type: 'value',
         name: '利润/价格',
-        nameTextStyle: { color: '#6d7b76' },
-        axisLabel: { color: '#6d7b76' },
+        nameTextStyle: { color: '#836274' },
+        axisLabel: { color: '#836274' },
         splitLine: { show: false }
       }
     ],
@@ -126,8 +126,8 @@
         itemStyle: {
           borderRadius: [12, 12, 4, 4],
           color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
-            { offset: 0, color: '#38bdf8' },
-            { offset: 1, color: '#0ea5e9' }
+            { offset: 0, color: '#C084FC' },
+            { offset: 1, color: '#A855F7' }
           ])
         }
       },
