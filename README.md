@@ -82,24 +82,24 @@ python manage.py runserver
 
 ### 从 Release 镜像包启动
 
-下载 `dynamicpricingsystem-v1.0.1-docker-image.tar.gz` 后，先加载镜像：
+下载 `dynamicpricingsystem-v1.0.2-docker-image.tar.gz` 后，先加载镜像：
 
 ```bash
-docker load -i dynamicpricingsystem-v1.0.1-docker-image.tar.gz
+docker load -i dynamicpricingsystem-v1.0.2-docker-image.tar.gz
 ```
 
-加载完成后会得到镜像 `dynamicpricingsystem:v1.0.1`。
+加载完成后会得到镜像 `dynamicpricingsystem:v1.0.2`。
 
 推荐使用单行命令启动，最不容易因为换行符出错：
 
 ```bash
-docker run --rm -p 8000:8000 -e DPS_SECRET_KEY="replace-with-a-random-secret" -e DPS_DEBUG=0 -v dynamic_pricing_data:/app/data dynamicpricingsystem:v1.0.1
+docker run --rm -p 8000:8000 -e DPS_SECRET_KEY="replace-with-a-random-secret" -e DPS_DEBUG=0 -v dynamic_pricing_data:/app/data dynamicpricingsystem:v1.0.2
 ```
 
 如需启动时自动写入演示数据：
 
 ```bash
-docker run --rm -p 8000:8000 -e DPS_SECRET_KEY="replace-with-a-random-secret" -e DPS_DEBUG=0 -e DPS_SEED_DEMO=1 -v dynamic_pricing_data:/app/data dynamicpricingsystem:v1.0.1
+docker run --rm -p 8000:8000 -e DPS_SECRET_KEY="replace-with-a-random-secret" -e DPS_DEBUG=0 -e DPS_SEED_DEMO=1 -v dynamic_pricing_data:/app/data dynamicpricingsystem:v1.0.2
 ```
 
 Linux/macOS 也可以使用多行命令。注意：每个反斜杠 `\` 必须是该行最后一个字符，后面不能有空格。
@@ -109,7 +109,7 @@ docker run --rm -p 8000:8000 \
   -e DPS_SECRET_KEY="replace-with-a-random-secret" \
   -e DPS_DEBUG=0 \
   -v dynamic_pricing_data:/app/data \
-  dynamicpricingsystem:v1.0.1
+  dynamicpricingsystem:v1.0.2
 ```
 
 Windows PowerShell 多行命令使用反引号：
@@ -119,7 +119,7 @@ docker run --rm -p 8000:8000 `
   -e DPS_SECRET_KEY="replace-with-a-random-secret" `
   -e DPS_DEBUG=0 `
   -v dynamic_pricing_data:/app/data `
-  dynamicpricingsystem:v1.0.1
+  dynamicpricingsystem:v1.0.2
 ```
 
 启动后访问：
@@ -153,7 +153,7 @@ docker: invalid reference format.
 通常是因为 Linux/macOS 的续行符 `\` 后面有空格，或者复制时把命令拆坏了。请优先使用 README 中的单行命令：
 
 ```bash
-docker run --rm -p 8000:8000 -e DPS_SECRET_KEY="replace-with-a-random-secret" -e DPS_DEBUG=0 -v dynamic_pricing_data:/app/data dynamicpricingsystem:v1.0.1
+docker run --rm -p 8000:8000 -e DPS_SECRET_KEY="replace-with-a-random-secret" -e DPS_DEBUG=0 -v dynamic_pricing_data:/app/data dynamicpricingsystem:v1.0.2
 ```
 
 ### 找不到 vX.Y.Z 镜像
@@ -161,10 +161,10 @@ docker run --rm -p 8000:8000 -e DPS_SECRET_KEY="replace-with-a-random-secret" -e
 `vX.Y.Z` 只是版本占位符。当前 Release 镜像加载后实际标签是：
 
 ```text
-dynamicpricingsystem:v1.0.1
+dynamicpricingsystem:v1.0.2
 ```
 
-因此启动命令末尾必须使用 `dynamicpricingsystem:v1.0.1`。
+因此启动命令末尾必须使用 `dynamicpricingsystem:v1.0.2`。
 
 ## GitHub Actions Release
 
@@ -178,8 +178,8 @@ dynamicpricingsystem:v1.0.1
 示例：
 
 ```bash
-git tag v1.0.1
-git push origin v1.0.1
+git tag v1.0.2
+git push origin v1.0.2
 ```
 
 ## 环境变量
