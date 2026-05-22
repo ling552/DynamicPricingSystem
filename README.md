@@ -82,24 +82,24 @@ python manage.py runserver
 
 ### 从 Release 镜像包启动
 
-下载 `dynamicpricingsystem-v1.0.2-docker-image.tar.gz` 后，先加载镜像：
+下载 `dynamicpricingsystem-v1.0.3-docker-image.tar.gz` 后，先加载镜像：
 
 ```bash
-docker load -i dynamicpricingsystem-v1.0.2-docker-image.tar.gz
+docker load -i dynamicpricingsystem-v1.0.3-docker-image.tar.gz
 ```
 
-加载完成后会得到镜像 `dynamicpricingsystem:v1.0.2`。
+加载完成后会得到镜像 `dynamicpricingsystem:v1.0.3`。
 
 推荐使用单行命令启动，最不容易因为换行符出错：
 
 ```bash
-docker run --rm -p 8000:8000 -e DPS_SECRET_KEY="replace-with-a-random-secret" -e DPS_DEBUG=0 -v dynamic_pricing_data:/app/data dynamicpricingsystem:v1.0.2
+docker run --rm -p 8000:8000 -e DPS_SECRET_KEY="replace-with-a-random-secret" -e DPS_DEBUG=0 -v dynamic_pricing_data:/app/data dynamicpricingsystem:v1.0.3
 ```
 
 如需启动时自动写入演示数据：
 
 ```bash
-docker run --rm -p 8000:8000 -e DPS_SECRET_KEY="replace-with-a-random-secret" -e DPS_DEBUG=0 -e DPS_SEED_DEMO=1 -v dynamic_pricing_data:/app/data dynamicpricingsystem:v1.0.2
+docker run --rm -p 8000:8000 -e DPS_SECRET_KEY="replace-with-a-random-secret" -e DPS_DEBUG=0 -e DPS_SEED_DEMO=1 -v dynamic_pricing_data:/app/data dynamicpricingsystem:v1.0.3
 ```
 
 Linux/macOS 也可以使用多行命令。注意：每个反斜杠 `\` 必须是该行最后一个字符，后面不能有空格。
@@ -109,7 +109,7 @@ docker run --rm -p 8000:8000 \
   -e DPS_SECRET_KEY="replace-with-a-random-secret" \
   -e DPS_DEBUG=0 \
   -v dynamic_pricing_data:/app/data \
-  dynamicpricingsystem:v1.0.2
+  dynamicpricingsystem:v1.0.3
 ```
 
 Windows PowerShell 多行命令使用反引号：
@@ -119,7 +119,7 @@ docker run --rm -p 8000:8000 `
   -e DPS_SECRET_KEY="replace-with-a-random-secret" `
   -e DPS_DEBUG=0 `
   -v dynamic_pricing_data:/app/data `
-  dynamicpricingsystem:v1.0.2
+  dynamicpricingsystem:v1.0.3
 ```
 
 启动后访问：
@@ -153,7 +153,7 @@ docker: invalid reference format.
 通常是因为 Linux/macOS 的续行符 `\` 后面有空格，或者复制时把命令拆坏了。请优先使用 README 中的单行命令：
 
 ```bash
-docker run --rm -p 8000:8000 -e DPS_SECRET_KEY="replace-with-a-random-secret" -e DPS_DEBUG=0 -v dynamic_pricing_data:/app/data dynamicpricingsystem:v1.0.2
+docker run --rm -p 8000:8000 -e DPS_SECRET_KEY="replace-with-a-random-secret" -e DPS_DEBUG=0 -v dynamic_pricing_data:/app/data dynamicpricingsystem:v1.0.3
 ```
 
 ### 找不到 vX.Y.Z 镜像
@@ -161,10 +161,10 @@ docker run --rm -p 8000:8000 -e DPS_SECRET_KEY="replace-with-a-random-secret" -e
 `vX.Y.Z` 只是版本占位符。当前 Release 镜像加载后实际标签是：
 
 ```text
-dynamicpricingsystem:v1.0.2
+dynamicpricingsystem:v1.0.3
 ```
 
-因此启动命令末尾必须使用 `dynamicpricingsystem:v1.0.2`。
+因此启动命令末尾必须使用 `dynamicpricingsystem:v1.0.3`。
 
 ## GitHub Actions Release
 
@@ -178,8 +178,8 @@ dynamicpricingsystem:v1.0.2
 示例：
 
 ```bash
-git tag v1.0.2
-git push origin v1.0.2
+git tag v1.0.3
+git push origin v1.0.3
 ```
 
 ## 环境变量
@@ -189,9 +189,19 @@ git push origin v1.0.2
 | `DPS_SECRET_KEY` | `django-insecure-change-me` | Django Secret Key，生产环境必须覆盖 |
 | `DPS_DEBUG` | `1` | 是否开启调试模式，Docker 默认设置为 `0` |
 | `DPS_ALLOWED_HOSTS` | `*` | Django 允许访问的 Host，多个值用逗号分隔 |
-| `DPS_CSRF_TRUSTED_ORIGINS` | `http://127.0.0.1,http://localhost` | CSRF 信任来源，多个值用逗号分隔 |
+| `DPS_CSRF_TRUSTED_ORIGINS` | `http://127.0.0.1,http://localhost` | CSRF 信任来源，多个值用逗号分隔。**自 v1.0.3 起**，系统会在每个请求中把 `<scheme>://<Host>`（同时包含 http 与 https）自动追加到信任列表，公网 IP / 域名 / 反向代理 HTTPS 部署不再需要手动配置该变量 |
 | `DPS_DATA_DIR` | `price_strategy_system/data` | SQLite 数据库保存目录 |
 | `DPS_SEED_DEMO` | 空 | Docker 启动时设为 `1` 会自动执行演示数据初始化 |
+
+### 用域名 / 公网 IP 访问会报「CSRF 验证失败 (403)」吗？
+
+v1.0.3 已修复。系统通过 `DynamicCsrfTrustedOriginsMiddleware` 中间件，把通过 `DPS_ALLOWED_HOSTS` 校验过的 Host 自动加入 CSRF 信任来源，因此：
+
+- 直接用公网 IP（如 `http://1.2.3.4:8000/`）访问后表单提交不会再 403；
+- 通过域名（如 `https://pricing.example.com/`）访问也不会再 403；
+- 反向代理终结 TLS（浏览器看到 `https://`、容器内 Django 看到 `http://`）的常见部署同样工作。
+
+如需更严格的安全策略，可以把 `DPS_ALLOWED_HOSTS` 显式列为具体域名（而不是默认的 `*`），中间件就只会信任这些域名。
 
 ## 开源协议
 

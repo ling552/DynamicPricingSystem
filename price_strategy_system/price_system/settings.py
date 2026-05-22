@@ -49,7 +49,7 @@ MIDDLEWARE = [
     "price_system.middleware.DevForceUtf8CharsetMiddleware",
     "django.middleware.locale.LocaleMiddleware",
     "django.middleware.common.CommonMiddleware",
-    "price_system.middleware.DevLocalhostCsrfTrustedOriginsMiddleware",
+    "price_system.middleware.DynamicCsrfTrustedOriginsMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
